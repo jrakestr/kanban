@@ -1,3 +1,6 @@
+// Parameter: Authorization
+// Format: Bearer ${token}
+
 import { UserLogin } from "../interfaces/UserLogin";
 
 const login = async (userInfo: UserLogin) => {

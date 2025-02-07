@@ -1,8 +1,11 @@
+// Parameter: Authorization
+// Format: Bearer ${token}
+
 import Auth from '../utils/auth';
 
 const retrieveUsers = async () => {
   try {
-    const response = await fetch('/api/users', {
+    const response = await fetch(`${process.env.VITE_API_BASE_URL || '/api'}/users`, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${Auth.getToken()}`

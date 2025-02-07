@@ -1,3 +1,6 @@
+// Parameter: Authorization
+// Format: Bearer ${token}
+
 const ErrorPage = () => {
   return (
     <section>

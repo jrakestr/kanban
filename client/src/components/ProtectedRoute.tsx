@@ -1,3 +1,7 @@
+// Parameter: Authorization
+// Format: Bearer ${token}
+
+
 import { Navigate } from 'react-router-dom';
 import Auth from '../utils/auth';
 

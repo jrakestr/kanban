@@ -1,3 +1,6 @@
+// Parameter: Authorization
+// Format: Bearer ${token}
+
 import TicketCard from './TicketCard';
 import { useDrop } from 'react-dnd';
 import { TicketData } from '../interfaces/TicketData';

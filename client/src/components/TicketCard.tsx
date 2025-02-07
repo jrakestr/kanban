@@ -1,3 +1,6 @@
+// Parameter: Authorization
+// Format: Bearer ${token}
+
 import { Link } from 'react-router-dom';
 import { useDrag } from 'react-dnd';
 

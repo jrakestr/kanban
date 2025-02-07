@@ -52,14 +52,25 @@ if (dbUrl) {
     },
   });
 
-  console.log('Attempting to authenticate using DATABASE_URL...');
-  sequelize.authenticate()
-    .then(() => {
+  (async () => {
+    try {
+      await sequelize.authenticate();
       console.log('Database connection established successfully using DATABASE_URL.');
-    })
-    .catch(err => {
-      console.error('Unable to connect to the database using DATABASE_URL:', err);
-    });
+      // Start heartbeat: ping the database every 60 seconds to keep connection alive and log status
+      setInterval(async () => {
+        try {
+          await sequelize.query('SELECT 1');
+          console.log('Heartbeat successful');
+        } catch (heartbeatError: any) {
+          console.error('Heartbeat failed:', heartbeatError);
+        }
+      }, 60000);
+    } catch (error: any) {
+      console.error('Unable to connect to the database using DATABASE_URL. Detailed error info:');
+      console.error(error);
+      console.error('Error stack:', error.stack);
+    }
+  })();
 } else {
   const dbName = process.env.DB_NAME || 'kanban_db';
   const dbUser = process.env.DB_USER || 'postgres';

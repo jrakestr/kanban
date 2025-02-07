@@ -1,3 +1,6 @@
+// Parameter: Authorization
+// Format: Bearer ${token}
+
 import { useNavigate } from 'react-router-dom';
 import auth from '../utils/auth';
 

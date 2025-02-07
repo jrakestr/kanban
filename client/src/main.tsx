@@ -1,4 +1,7 @@
-import ReactDOM from 'react-dom/client';
+// Parameter: Authorization
+// Format: Bearer ${token}
+
+import * as ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import './index.css';
 

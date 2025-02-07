@@ -1,3 +1,6 @@
+// Parameter: Authorization
+// Format: Bearer ${token}
+
 import { useState, useEffect, FormEvent, ChangeEvent } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -20,8 +23,10 @@ const EditTicket = () => {
   }
 
   useEffect(() => {
-    fetchTicket(state);
-  }, []);
+    if (state) {
+      fetchTicket(state);
+    }
+  }, [state]);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();

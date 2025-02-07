@@ -1,3 +1,6 @@
+// Parameter: Authorization
+// Format: Bearer ${token}
+
 import { useState, FormEvent, ChangeEvent } from "react";
 
 import Auth from '../utils/auth';

@@ -1,3 +1,7 @@
+// Parameter: Authorization
+// Format: Bearer ${token}
+// All components that make API calls require authentication
+
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';

@@ -1,3 +1,7 @@
+// Must be a valid JWT token
+// Must have an expiration (exp) claim
+// Dependencies: Required for all authenticated API calls
+
 import { JwtPayload, jwtDecode } from 'jwt-decode';
 
 // Define our custom JWT payload type

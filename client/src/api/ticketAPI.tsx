@@ -1,3 +1,6 @@
+// Validation: Must be a valid URL or default to '/api'
+// Base URL for API calls
+
 import { TicketData } from '../interfaces/TicketData';
 import { ApiMessage } from '../interfaces/ApiMessage';
 import Auth from '../utils/auth';
@@ -5,7 +8,7 @@ import Auth from '../utils/auth';
 const retrieveTickets = async () => {
   try {
     const response = await fetch(
-      '/api/tickets/',
+      `${process.env.VITE_API_BASE_URL || '/api'}/tickets/`,
       {
         headers: {
           'Content-Type': 'application/json',
@@ -29,7 +32,7 @@ const retrieveTickets = async () => {
 const retrieveTicket = async (id: number | null): Promise<TicketData> => {
   try {
     const response = await fetch(
-      `/api/tickets/${id}`,
+      `${process.env.VITE_API_BASE_URL || '/api'}/tickets/${id}`,
       {
         headers: {
           'Content-Type': 'application/json',
@@ -53,7 +56,7 @@ const retrieveTicket = async (id: number | null): Promise<TicketData> => {
 const createTicket = async (body: TicketData) => {
   try {
     const response = await fetch(
-      '/api/tickets/', {
+      `${process.env.VITE_API_BASE_URL || '/api'}/tickets/`, {
         method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -80,7 +83,7 @@ const createTicket = async (body: TicketData) => {
 const updateTicket = async (ticketId: number, body: TicketData): Promise<TicketData> => {
   try {
     const response = await fetch(
-      `/api/tickets/${ticketId}`, {
+      `${process.env.VITE_API_BASE_URL || '/api'}/tickets/${ticketId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -105,7 +108,7 @@ const updateTicket = async (ticketId: number, body: TicketData): Promise<TicketD
 const deleteTicket = async (ticketId: number): Promise<ApiMessage> => {
   try {
     const response = await fetch(
-      `/api/tickets/${ticketId}`, {
+      `${process.env.VITE_API_BASE_URL || '/api'}/tickets/${ticketId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',

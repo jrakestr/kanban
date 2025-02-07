@@ -1,3 +1,6 @@
+// Ticket data structure for CRUD operations
+// Depends on UserData interface
+
 import { UserData } from './UserData';
 
 export interface TicketData {

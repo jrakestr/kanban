@@ -14,7 +14,7 @@
     "client:build": "cd client && npm run build",
     "client:dev": "cd client && npm run dev",
     "seed": "cd server && npm run seed",
-    "render-build": "npm install && cd client && npm install --production=false && npm run build && cd ../server && npm install --production=false && npm run build && npm run seed && cd .. && cp -r client/dist server/"
+    "render-build": "npm install && cd client && npm install --production=false && npm run build && cd ../server && npm install --production=false && npm run build && NODE_ENV=production npm run seed && cd .. && cp -r client/dist server/"
   },
   "keywords": [],
   "author": "",

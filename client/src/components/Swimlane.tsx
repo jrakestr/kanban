@@ -5,7 +5,6 @@ import { Box, Heading, VStack, useColorModeValue } from "@chakra-ui/react";
 import TicketCard from "./TicketCard";
 import { useDrop } from "react-dnd";
 import { TicketData } from "../interfaces/TicketData";
-import { ApiMessage } from "../interfaces/ApiMessage";
 
 interface SwimlaneProps {
 	title: string;

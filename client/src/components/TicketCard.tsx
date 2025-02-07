@@ -14,8 +14,6 @@ import { Link } from "react-router-dom";
 import { useDrag } from "react-dnd";
 
 import { TicketData } from "../interfaces/TicketData";
-import { ApiMessage } from "../interfaces/ApiMessage";
-import { MouseEventHandler } from "react";
 
 interface TicketCardProps {
 	ticket: TicketData;

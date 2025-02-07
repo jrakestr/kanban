@@ -25,6 +25,7 @@ const CreateTicket = () => {
 	const navigate = useNavigate();
 	const [error, setError] = useState(false);
 	const [newTicket, setNewTicket] = useState<Partial<TicketData>>({
+		id: null,
 		name: "",
 		status: "Todo",
 		description: "",

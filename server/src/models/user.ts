@@ -49,5 +49,18 @@ const User = sequelize.define<UserInstance>(
   return bcrypt.compare(password, this.password);
 };
 
+// Set up association with Ticket model
+import { Ticket } from './ticket.js';
+
+User.hasMany(Ticket, {
+  foreignKey: 'createdById',
+  as: 'createdTickets'
+});
+
+Ticket.belongsTo(User, {
+  foreignKey: 'createdById',
+  as: 'createdBy'
+});
+
 export { User, UserInstance };
 export default User;

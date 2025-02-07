@@ -9,6 +9,7 @@ interface TicketAttributes {
   name: string;
   status: string;
   description: string;
+  createdById: number;
 }
 
 interface TicketCreationAttributes extends Optional<TicketAttributes, 'id'> {}
@@ -18,6 +19,7 @@ class Ticket extends Model<TicketAttributes, TicketCreationAttributes> implement
   public name!: string;
   public status!: string;
   public description!: string;
+  public createdById!: number;
 
 
   public readonly createdAt!: Date;
@@ -43,6 +45,14 @@ Ticket.init(
     description: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    createdById: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'Users',
+        key: 'id'
+      }
     },
 
   },

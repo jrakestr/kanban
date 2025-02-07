@@ -76,7 +76,6 @@ class AuthService {
   logout(): void {
     localStorage.removeItem('token');
     this.stopSessionCheck();
-    window.location.assign('/login');
   }
 }
 

@@ -8,7 +8,7 @@ import Auth from '../utils/auth';
 const retrieveTickets = async () => {
   try {
     const response = await fetch(
-      `${process.env.VITE_API_BASE_URL || '/api'}/tickets/`,
+      'http://localhost:3001/api/tickets',
       {
         headers: {
           'Content-Type': 'application/json',
@@ -32,7 +32,7 @@ const retrieveTickets = async () => {
 const retrieveTicket = async (id: number | null): Promise<TicketData> => {
   try {
     const response = await fetch(
-      `${process.env.VITE_API_BASE_URL || '/api'}/tickets/${id}`,
+      `http://localhost:3001/api/tickets/${id}`,
       {
         headers: {
           'Content-Type': 'application/json',
@@ -56,7 +56,7 @@ const retrieveTicket = async (id: number | null): Promise<TicketData> => {
 const createTicket = async (body: TicketData) => {
   try {
     const response = await fetch(
-      `${process.env.VITE_API_BASE_URL || '/api'}/tickets/`, {
+      'http://localhost:3001/api/tickets', {
         method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -83,7 +83,7 @@ const createTicket = async (body: TicketData) => {
 const updateTicket = async (ticketId: number, body: TicketData): Promise<TicketData> => {
   try {
     const response = await fetch(
-      `${process.env.VITE_API_BASE_URL || '/api'}/tickets/${ticketId}`, {
+      `http://localhost:3001/api/tickets/${ticketId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -108,7 +108,7 @@ const updateTicket = async (ticketId: number, body: TicketData): Promise<TicketD
 const deleteTicket = async (ticketId: number): Promise<ApiMessage> => {
   try {
     const response = await fetch(
-      `${process.env.VITE_API_BASE_URL || '/api'}/tickets/${ticketId}`, {
+      `http://localhost:3001/api/tickets/${ticketId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',

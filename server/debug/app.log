@@ -1,0 +1,19 @@
+{"level":"warn","message":"Static folder not found at /opt/render/project/src/client/dist. Skipping static file serving.","timestamp":"2025-02-07T10:37:14.702Z"}
+{"level":"info","message":"Incoming GET /","timestamp":"2025-02-07T10:37:31.168Z"}
+{"level":"info","message":"Response 404 for GET /","timestamp":"2025-02-07T10:37:31.190Z"}
+{"level":"warn","message":"Static folder not found at /opt/render/project/src/client/dist. Skipping static file serving.","timestamp":"2025-02-07T10:38:34.092Z"}
+{"level":"info","message":"Incoming GET /","timestamp":"2025-02-07T10:38:39.059Z"}
+{"level":"info","message":"Response 404 for GET /","timestamp":"2025-02-07T10:38:39.072Z"}
+{"level":"warn","message":"Static folder not found at /opt/render/project/src/client/dist. Skipping static file serving.","timestamp":"2025-02-07T10:39:56.433Z"}
+{"level":"info","message":"Incoming GET /","timestamp":"2025-02-07T10:40:04.332Z"}
+{"level":"info","message":"Response 404 for GET /","timestamp":"2025-02-07T10:40:04.339Z"}
+{"level":"warn","message":"Static folder not found at /Users/justinrakestraw/Kanban/server/client/dist. Skipping static file serving.","timestamp":"2025-02-07T10:50:19.085Z"}
+{"level":"warn","message":"Static folder not found at /Users/justinrakestraw/Kanban/server/client/dist. Skipping static file serving.","timestamp":"2025-02-07T10:50:50.053Z"}
+{"level":"warn","message":"Static folder not found at /Users/justinrakestraw/Kanban/server/client/dist. Skipping static file serving.","timestamp":"2025-02-07T10:51:12.986Z"}
+{"level":"info","message":"Incoming GET /","timestamp":"2025-02-07T10:51:25.693Z"}
+{"level":"info","message":"Response 404 for GET /","timestamp":"2025-02-07T10:51:25.704Z"}
+{"level":"info","message":"Incoming GET /favicon.ico","timestamp":"2025-02-07T10:51:26.755Z"}
+{"level":"info","message":"Response 404 for GET /favicon.ico","timestamp":"2025-02-07T10:51:26.758Z"}
+{"level":"warn","message":"Static folder not found at /opt/render/project/src/client/dist. Skipping static file serving.","timestamp":"2025-02-07T10:55:55.040Z"}
+{"level":"info","message":"Incoming GET /","timestamp":"2025-02-07T10:55:58.983Z"}
+{"level":"info","message":"Response 404 for GET /","timestamp":"2025-02-07T10:55:58.994Z"}

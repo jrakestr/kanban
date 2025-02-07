@@ -1,3 +1,5 @@
+# {**/  double check render.yaml for proper configuration **/}
+
 services:
   - type: web
     name: kanban
@@ -19,6 +21,8 @@ services:
       - key: PORT
         value: 3001
 
+# {**/  matches the Postgres connection string: postgresql://kanban_user:q0vQDd0KrXJdUKQQg0VwoGD2QzwSTzfY@dpg-cuip2atumphs73dshtb0-a/kanban_db_ngpw **/}
+
 databases:
   - name: kanban-db
     region: ohio
@@ -26,3 +30,13 @@ databases:
     databaseName: kanban_db
     user: kanban_user
     ipAllowList: []
+
+# {**/ Hostname: dpg-cuip2atumphs73dshtb0-a **/}
+
+# {**/ Port: 5432 **/}
+
+# {**/ Database: kanban_db_ngpw **/}
+
+# {**/ Username: kanban_user **/}
+
+# {**/ Password: q0vQDd0KrXJdUKQQg0VwoGD2QzwSTzfY **/}

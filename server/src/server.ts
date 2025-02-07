@@ -13,12 +13,19 @@ const PORT = process.env.PORT || 3001;
 app.use(express.json());
 app.use(routes);
 
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const clientPath = path.join(__dirname, '../../client/dist');
+
 // Serve static files from the client's dist folder
-app.use(express.static('../client/dist'));
+app.use(express.static(clientPath));
 
 // Handle client-side routing
 app.get('*', (_req, res) => {
-  res.sendFile('index.html', { root: '../client/dist' });
+  res.sendFile(path.join(clientPath, 'index.html'));
 });
 
 sequelize.sync({force: forceDatabaseRefresh}).then(() => {

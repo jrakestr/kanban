@@ -1,0 +1,44 @@
+services:
+  - type: web
+    name: kanban-server
+    runtime: node
+    region: ohio
+    plan: free
+    buildCommand: cd server && npm install && npm run build
+    startCommand: cd server && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DB_NAME
+        value: kanban_db
+      - key: DB_USER
+        fromDatabase:
+          name: kanban-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: kanban-db
+          property: password
+      - key: JWT_SECRET
+        generateValue: true
+      - key: PORT
+        value: 3001
+
+  - type: web
+    name: kanban-client
+    runtime: node
+    region: ohio
+    plan: free
+    buildCommand: cd client && npm install && npm run build
+    startCommand: cd client && npm run preview
+    envVars:
+      - key: VITE_API_URL
+        value: https://kanban-server.onrender.com
+
+databases:
+  - name: kanban-db
+    region: ohio
+    plan: free
+    databaseName: kanban_db
+    user: kanban_user
+    ipAllowList: []

@@ -5,6 +5,7 @@ A full-stack Kanban board application built with React, TypeScript, and Express.
 ## Features
 
 - User Authentication (JWT)
+
 - Create, Read, Update, Delete tickets
 - Drag-and-drop ticket management
 - Sort tickets by name or date

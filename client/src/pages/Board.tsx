@@ -1,7 +1,7 @@
 import { useEffect, useState, useLayoutEffect } from 'react';
 import { Link } from 'react-router-dom';
 
-import { retrieveTickets, deleteTicket } from '../api/ticketAPI';
+import { retrieveTickets, deleteTicket, updateTicket } from '../api/ticketAPI';
 import ErrorPage from './ErrorPage';
 import Swimlane from '../components/Swimlane';
 import { TicketData } from '../interfaces/TicketData';
@@ -45,6 +45,35 @@ const Board = () => {
     }
   }
 
+  const handleDrop = async (ticketId: number, newStatus: string) => {
+    try {
+      console.log('Handling drop:', { ticketId, newStatus });
+      const ticket = tickets.find(t => t.id === ticketId);
+      if (!ticket) {
+        console.error('Ticket not found:', ticketId);
+        return;
+      }
+      
+      // Optimistically update the UI
+      const updatedTickets = tickets.map(t => 
+        t.id === ticketId ? { ...t, status: newStatus } : t
+      );
+      setTickets(updatedTickets);
+
+      console.log('Updating ticket:', { ticketId, oldStatus: ticket.status, newStatus });
+      // Update the backend
+      await updateTicket(ticketId, { ...ticket, status: newStatus });
+      console.log('Backend update successful');
+      
+      // Refresh the board to ensure sync
+      await fetchTickets();
+    } catch (err) {
+      console.error('Failed to update ticket status:', err);
+      setError(true);
+      // Revert the optimistic update on error
+      fetchTickets();
+    }
+  };
   useLayoutEffect(() => {
     checkLogin();
   }, []);
@@ -133,6 +162,7 @@ const Board = () => {
                     key={status} 
                     tickets={filteredTickets} 
                     deleteTicket={deleteIndvTicket}
+                    onDrop={handleDrop}
                   />
                 );
               })}

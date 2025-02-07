@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useDrag } from 'react-dnd';
 
 import { TicketData } from '../interfaces/TicketData';
 import { ApiMessage } from '../interfaces/ApiMessage';
@@ -10,6 +11,16 @@ interface TicketCardProps {
 }
 
 const TicketCard = ({ ticket, deleteTicket }: TicketCardProps) => {
+  const [{ isDragging }, drag] = useDrag({
+    type: 'TICKET',
+    item: () => {
+      console.log('Dragging ticket:', ticket);
+      return ticket;
+    },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging()
+    })
+  });
 
   const handleDelete: MouseEventHandler<HTMLButtonElement> = async (event) => {
     const ticketId = Number(event.currentTarget.value);
@@ -24,7 +35,10 @@ const TicketCard = ({ ticket, deleteTicket }: TicketCardProps) => {
   };
 
   return (
-    <div className='ticket-card'>
+    <div 
+      ref={drag}
+      className={`ticket-card ${isDragging ? 'dragging' : ''}`}
+      style={{ opacity: isDragging ? 0.5 : 1 }}>
       <h3>{ticket.name}</h3>
       <p>{ticket.description}</p>
       <p>{ticket.assignedUser?.username}</p>

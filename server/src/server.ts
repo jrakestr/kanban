@@ -41,7 +41,7 @@ app.use(cors({
 }));
 
 // Add error handling middleware
-app.use((err: any, req: any, res: any, next: any) => {
+app.use((err: any, _req: any, res: any, next: any) => {
   if (err.message === 'Not allowed by CORS') {
     res.status(403).json({
       error: 'CORS Error',

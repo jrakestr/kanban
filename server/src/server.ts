@@ -6,7 +6,16 @@ dotenv.config();
 import express from 'express';
 import cors from 'cors';
 import routes from './routes/index.js';
-import { sequelize } from './models/index.js';
+import healthRoutes from './routes/health-routes.js';
+import { sequelize } from './config/db.js';
+
+// Log environment information
+console.log('Environment:', {
+  NODE_ENV: process.env.NODE_ENV,
+  PORT: process.env.PORT,
+  DATABASE_URL: process.env.DATABASE_URL ? '[REDACTED]' : undefined,
+  JWT_SECRET: process.env.JWT_SECRET ? '[PRESENT]' : '[MISSING]'
+});
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -51,8 +60,28 @@ app.use((err: any, _req: any, res: any, next: any) => {
     next(err);
   }
 });
+// Add request logging middleware
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
+  next();
+});
+
+// Parse JSON bodies
 app.use(express.json());
-app.use(routes);
+
+// Routes
+app.use('/health', healthRoutes); // Health check endpoint
+app.use(routes); // Main application routes
+
+// Global error handler
+app.use((err: any, _req: any, res: any, next: any) => {
+  console.error('Unhandled error:', err);
+  res.status(500).json({
+    error: 'Internal Server Error',
+    message: process.env.NODE_ENV === 'development' ? err.message : 'An unexpected error occurred',
+    timestamp: new Date().toISOString()
+  });
+});
 
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -74,7 +103,9 @@ import { seedUsers } from './seeds/user-seeds.js';
 import { seedTickets } from './seeds/ticket-seeds.js';
 
 // Initialize database and seed data
+// Initialize database
 sequelize.sync({force: forceDatabaseRefresh}).then(async () => {
+  console.log('Database connection established successfully.');
   if (forceDatabaseRefresh) {
     console.log('Database reset initiated...');
     try {

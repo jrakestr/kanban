@@ -1,4 +1,4 @@
-const forceDatabaseRefresh = false;
+const forceDatabaseRefresh = true; // Enable database seeding
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -69,7 +69,23 @@ app.get('*', (_req, res) => {
   res.sendFile(path.join(clientPath, 'index.html'));
 });
 
-sequelize.sync({force: forceDatabaseRefresh}).then(() => {
+// Import seed functions
+import { seedUsers } from './seeds/user-seeds.js';
+import { seedTickets } from './seeds/ticket-seeds.js';
+
+// Initialize database and seed data
+sequelize.sync({force: forceDatabaseRefresh}).then(async () => {
+  if (forceDatabaseRefresh) {
+    console.log('Database reset initiated...');
+    try {
+      await seedUsers();
+      console.log('Users seeded successfully');
+      await seedTickets();
+      console.log('Tickets seeded successfully');
+    } catch (error) {
+      console.error('Error seeding database:', error);
+    }
+  }
   app.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`);
   });

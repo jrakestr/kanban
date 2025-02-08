@@ -51,7 +51,7 @@ const retrieveTicket = async (id: number | null): Promise<TicketData> => {
 	}
 };
 
-const createTicket = async (body: TicketData) => {
+const createTicket = async (body: Partial<TicketData>): Promise<TicketData> => {
 	try {
 		const response = await fetch(
 			`${import.meta.env.VITE_API_BASE_URL || "/api"}/tickets`,

@@ -10,7 +10,11 @@ import {
   Image,
   keyframes,
   VStack,
-  HStack
+  HStack,
+  FormControl,
+  FormLabel,
+  FormErrorMessage,
+  useColorModeValue
 } from '@chakra-ui/react';
 import { useState, FormEvent } from 'react';
 import Auth from '../utils/auth';
@@ -20,15 +24,34 @@ import kanbanLogo from '../assets/kanban.png';
 export default function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
   const toast = useToast();
+  
+  const bgGradient = useColorModeValue(
+    'linear(to-br, blue.400, blue.600)',
+    'linear(to-br, blue.600, blue.800)'
+  );
+  const formBg = useColorModeValue('white', 'gray.800');
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError('');
+    setIsLoading(true);
+    
     try {
       const response = await login({ username, password });
       Auth.login(response.token);
+      toast({
+        title: 'Success',
+        description: 'Successfully logged in!',
+        status: 'success',
+        duration: 2000,
+        isClosable: true,
+      });
     } catch (err) {
       console.error('Login error:', err);
+      setError('Invalid username or password');
       toast({
         title: 'Error',
         description: 'Failed to login. Please check your credentials.',
@@ -36,6 +59,8 @@ export default function Login() {
         duration: 3000,
         isClosable: true,
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -54,7 +79,7 @@ export default function Login() {
     >
       {/* Left side - Animated Background */}
       <GridItem
-        bg="blue.600"
+        bgGradient={bgGradient}
         position="relative"
         overflow="hidden"
         display={{ base: 'none', md: 'block' }}
@@ -122,57 +147,39 @@ export default function Login() {
           </VStack>
 
           <VStack spacing={6} w="full">
-            <Box w="full">
-              <Text mb={2} fontWeight="medium">Username</Text>
+            <FormControl isInvalid={!!error}>
+              <FormLabel>Username</FormLabel>
               <Input
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Enter your username"
                 size="lg"
-                bg="white"
-                borderWidth={2}
-                _focus={{
-                  borderColor: 'blue.400',
-                  boxShadow: 'none'
-                }}
+                bg={formBg}
+                required
               />
-            </Box>
+            </FormControl>
 
-            <Box w="full">
-              <Text mb={2} fontWeight="medium">Password</Text>
+            <FormControl isInvalid={!!error}>
+              <FormLabel>Password</FormLabel>
               <Input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your password"
                 size="lg"
-                bg="white"
-                borderWidth={2}
-                _focus={{
-                  borderColor: 'blue.400',
-                  boxShadow: 'none'
-                }}
+                bg={formBg}
+                required
               />
-            </Box>
+              <FormErrorMessage>{error}</FormErrorMessage>
+            </FormControl>
 
             <Button
               type="submit"
               size="lg"
               w="full"
-              bg="blue.600"
-              color="white"
-              _hover={{
-                bg: 'blue.700',
-                transform: 'translateY(-2px)',
-                boxShadow: 'lg'
-              }}
-              _active={{
-                bg: 'blue.800',
-                transform: 'translateY(0)'
-              }}
-              transition="all 0.2s"
-              fontSize="lg"
+              isLoading={isLoading}
+              loadingText="Signing in..."
               h={14}
             >
               Sign In

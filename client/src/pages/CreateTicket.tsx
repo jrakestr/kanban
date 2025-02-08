@@ -46,12 +46,19 @@ const CreateTicket = () => {
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
-		if (!newTicket.name) {
+		if (!newTicket.name || !newTicket.status || !newTicket.description) {
 			setError(true);
 			return;
 		}
 		try {
-			await createTicket(newTicket);
+			const ticketToCreate: Partial<TicketData> = {
+				...newTicket,
+				id: null, // Ensure id is explicitly set to null for creation
+				assignedUserId: null,
+				assignedUser: null,
+				createdBy: null
+			};
+			await createTicket(ticketToCreate);
 			navigate("/");
 		} catch (err) {
 			console.error("Failed to create ticket:", err);

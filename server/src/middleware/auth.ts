@@ -22,76 +22,91 @@ declare global {
   }
 }
 
+// Custom error for authentication failures
+class AuthError extends Error {
+  constructor(message: string, public status: number = 401) {
+    super(message);
+    this.name = 'AuthError';
+  }
+}
+
 // Middleware to authenticate JWT token
-export const authenticateToken = (req: Request, res: Response, next: NextFunction): void => {
+export const authenticateToken = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const authHeader = req.headers['authorization'];
+    const authHeader = req.headers.authorization;
     console.log('Auth header:', authHeader ? 'Present' : 'Missing');
 
     if (!authHeader) {
-      res.status(401).json({
-        error: 'Authentication Error',
-        message: 'No authorization header provided',
-        timestamp: new Date().toISOString()
-      });
-      return;
+      throw new AuthError('No authorization header provided');
     }
 
-    const token = authHeader.split(' ')[1];
+    const [scheme, token] = authHeader.split(' ');
+    
+    if (scheme !== 'Bearer') {
+      throw new AuthError('Invalid authorization scheme. Use Bearer');
+    }
+
     if (!token) {
-      res.status(401).json({
-        error: 'Authentication Error',
-        message: 'No token provided in authorization header',
-        timestamp: new Date().toISOString()
-      });
-      return;
+      throw new AuthError('No token provided in authorization header');
     }
 
     const secret = process.env.JWT_SECRET;
     if (!secret) {
-      console.error('JWT_SECRET is not set in environment variables');
-      res.status(500).json({
-        error: 'Server Configuration Error',
-        message: 'Authentication is not properly configured',
+      console.error('JWT_SECRET is not configured');
+      throw new AuthError('Server configuration error', 500);
+    }
+
+    const decoded = jwt.verify(token, secret) as JwtPayload;
+    
+    // Check token expiration explicitly even though jwt.verify does this
+    // This gives us a chance to provide a more specific error message
+    const currentTime = Math.floor(Date.now() / 1000);
+    if (decoded.exp && decoded.exp < currentTime) {
+      throw new AuthError('Token has expired');
+    }
+
+    if (!decoded.username || !decoded.id) {
+      throw new AuthError('Invalid token payload');
+    }
+
+    req.user = {
+      username: decoded.username,
+      id: decoded.id
+    };
+    next();
+  } catch (error) {
+    console.error('Token verification error:', error);
+    
+    if (error instanceof AuthError) {
+      res.status(error.status).json({
+        error: 'Authentication Error',
+        message: error.message,
         timestamp: new Date().toISOString()
       });
       return;
     }
 
-    try {
-      const decoded = jwt.verify(token, secret) as JwtPayload;
-      
-      // Check token expiration
-      const currentTime = Math.floor(Date.now() / 1000);
-      if (decoded.exp && decoded.exp < currentTime) {
-        res.status(401).json({
-          error: 'Authentication Error',
-          message: 'Token has expired',
-          timestamp: new Date().toISOString()
-        });
-        return;
-      }
-
-      // Add user info to request (excluding JWT-specific fields)
-      req.user = {
-        id: decoded.id,
-        username: decoded.username
-      };
-      next();
-    } catch (error) {
-      console.error('JWT verification error:', error);
-      res.status(403).json({
+    if (error instanceof jwt.JsonWebTokenError) {
+      res.status(401).json({
         error: 'Authentication Error',
         message: 'Invalid or expired token',
         timestamp: new Date().toISOString()
       });
       return;
     }
-  } catch (error) {
-    console.error('Authentication error:', error);
+
+    if (error instanceof jwt.TokenExpiredError) {
+      res.status(401).json({
+        error: 'Authentication Error',
+        message: 'Token has expired',
+        timestamp: new Date().toISOString()
+      });
+      return;
+    }
+
     res.status(500).json({
-      error: 'Authentication Error',
-      message: 'An error occurred during authentication',
+      error: 'Server Error',
+      message: 'An unexpected error occurred',
       timestamp: new Date().toISOString()
     });
   }

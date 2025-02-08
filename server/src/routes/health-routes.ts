@@ -11,12 +11,13 @@ router.get('/health', async (_req: Request, res: Response) => {
       database: 'connected',
       timestamp: new Date().toISOString()
     });
-  } catch (error) {
-    console.error('Database connection error:', error);
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error('Database connection error:', errorMessage);
     res.status(500).json({ 
       status: 'unhealthy',
       database: 'disconnected',
-      error: process.env.NODE_ENV === 'development' ? error.message : 'Database connection failed',
+      error: process.env.NODE_ENV === 'development' ? errorMessage : 'Database connection failed',
       timestamp: new Date().toISOString()
     });
   }

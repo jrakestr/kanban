@@ -17,8 +17,8 @@ import {
   useColorModeValue
 } from '@chakra-ui/react';
 import { useState, FormEvent } from 'react';
-import Auth from '../utils/auth';
-import { login } from '../api/authAPI';
+import { useNavigate } from 'react-router-dom';
+import { useAuthContext } from '../context/AuthContext';
 import kanbanLogo from '../assets/kanban.png';
 
 export default function Login() {
@@ -34,14 +34,34 @@ export default function Login() {
   );
   const formBg = useColorModeValue('white', 'gray.800');
 
+  const { login } = useAuthContext();
+  const navigate = useNavigate();
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    console.log('🔍 [Login Form] Submit started');
     e.preventDefault();
+    
+    // Validate input
+    if (!username || !password) {
+      setError('Username and password are required');
+      toast({
+        title: 'Error',
+        description: 'Please enter both username and password',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
     setError('');
     setIsLoading(true);
     
     try {
-      const response = await login({ username, password });
-      Auth.login(response.token);
+      console.log('🔍 [Login Form] Calling login with:', { username });
+      await login({ username, password });
+      console.log('🔍 [Login Form] Login successful, navigating to /');
+      navigate('/');
       toast({
         title: 'Success',
         description: 'Successfully logged in!',
@@ -50,11 +70,13 @@ export default function Login() {
         isClosable: true,
       });
     } catch (err) {
+      console.log('🔍 [Login Form] Login failed:', err);
       console.error('Login error:', err);
-      setError('Invalid username or password');
+      const errorMessage = err instanceof Error ? err.message : 'Failed to login';
+      setError(errorMessage);
       toast({
         title: 'Error',
-        description: 'Failed to login. Please check your credentials.',
+        description: errorMessage,
         status: 'error',
         duration: 3000,
         isClosable: true,

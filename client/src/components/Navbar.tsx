@@ -4,12 +4,12 @@
 
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
+import { useAuthContext } from '../context/AuthContext';
 import auth from '../utils/auth';
 
 const Navbar = () => {
   const [ loginCheck, setLoginCheck ] = useState(false);
-  const { logout } = useAuth();
+  const { logout } = useAuthContext();
 
   const checkLogin = () => {
     if(auth.loggedIn()) {

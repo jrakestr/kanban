@@ -2,18 +2,25 @@ import { Router, Request, Response } from 'express';
 import { User } from '../models/user.js';
 import jwt from 'jsonwebtoken';
 
-export const login = async (req: Request, res: Response): Promise<void> => {
-  // Set CORS headers explicitly for the login route
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.header('Access-Control-Allow-Credentials', 'true');
+interface LoginResponse {
+  token: string;
+  user: {
+    id: number;
+    username: string;
+  };
+}
 
-  // Handle preflight request
-  if (req.method === 'OPTIONS') {
-    res.status(200).end();
-    return;
-  }
+export const login = async (req: Request, res: Response): Promise<void> => {
+  console.log('🔥 ============== LOGIN START ==============');
+  console.log('🔥 REQUEST BODY:', req.body);
+  console.log('🔥 CONTENT-TYPE:', req.headers['content-type']);
+  console.log('==================== LOGIN START ====================');
+  console.log('[DEBUG] Login attempt:', {
+    method: req.method,
+    headers: req.headers,
+    body: req.body
+  });
+
   const { username, password } = req.body;
 
   // Validate input
@@ -24,20 +31,37 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
   try {
     // Find user by username
+    console.log('🔥 FINDING USER:', username);
     const user = await User.findOne({ where: { username } });
+    console.log('🔥 USER IN DB:', user ? {
+      id: user.id,
+      username: user.username,
+      passwordHash: user.password,
+    } : 'NO USER FOUND');
     if (!user) {
-      res.status(401).json({ message: 'Invalid credentials' });
+      res.status(401).json({ 
+        message: 'Invalid credentials',
+        timestamp: new Date().toISOString()
+      });
       return;
     }
 
     // Verify password
+    console.log('🔥 COMPARING PASSWORDS:');
+    console.log('🔥 PROVIDED PASSWORD:', password);
+    console.log('🔥 STORED HASH:', user.password);
     const validPassword = await user.comparePassword(password);
+    console.log('🔥 PASSWORD VALID:', validPassword);
     if (!validPassword) {
-      res.status(401).json({ message: 'Invalid credentials' });
+      res.status(401).json({ 
+        message: 'Invalid credentials',
+        timestamp: new Date().toISOString()
+      });
       return;
     }
 
     // Generate token
+    console.log('[DEBUG] Generating JWT token...');
     const token = jwt.sign(
       { 
         id: user.id,
@@ -48,17 +72,25 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     );
 
     // Send response
-    res.json({ 
+    const response: LoginResponse = {
       token,
       user: {
         id: user.id,
         username: user.username
       }
-    });
+    };
+    res.json(response);
     return;
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Login error:', error);
-    res.status(500).json({ message: 'Server error' });
+    // Send a more detailed error response
+    res.status(500).json({
+      message: 'Server error',
+      error: process.env.NODE_ENV === 'development' ? 
+        error instanceof Error ? error.message : 'Unknown error' 
+        : undefined,
+      timestamp: new Date().toISOString()
+    });
   }
 };
 

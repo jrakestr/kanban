@@ -3,44 +3,62 @@
 
 import { UserLogin } from "../interfaces/UserLogin";
 
-const login = async (userInfo: UserLogin) => {
+interface LoginResponse {
+  token: string;
+  user: {
+    id: number;
+    username: string;
+  };
+}
+
+const login = async (userInfo: UserLogin): Promise<LoginResponse> => {
+  console.log('🔍 [AuthAPI] Login request started');
 	try {
 		// Get the API base URL from environment variables
 		const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
-		console.log('API URL:', apiUrl); // Debug log
+		console.log('Login attempt:', { apiUrl, username: userInfo.username });
 
+		console.log('🔍 [AuthAPI] Making fetch request to:', `${apiUrl}/auth/login`);
 		const response = await fetch(
-			`${apiUrl}/login`,
+			`${apiUrl}/auth/login`,
 			{
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
-					"Accept": "application/json"
 				},
 				body: JSON.stringify(userInfo),
 				credentials: 'include'
 			}
 		);
 
-		console.log('Response status:', response.status); // Debug log
+		console.log('Response:', { 
+			status: response.status,
+			statusText: response.statusText,
+			headers: Object.fromEntries(response.headers.entries())
+		});
 
 		if (!response.ok) {
-			let errorMessage = 'Invalid credentials';
+			let errorMessage;
 			try {
 				const errorData = await response.json();
-				errorMessage = errorData.message || errorMessage;
+				errorMessage = errorData.message;
 			} catch (e) {
-				console.error('Error parsing error response:', e);
+				errorMessage = `HTTP error! status: ${response.status}`;
 			}
 			throw new Error(errorMessage);
 		}
 
 		const data = await response.json();
-		if (!data.token) {
-			throw new Error("No token received from server");
+		console.log('🔍 [AuthAPI] Server response:', {
+			status: response.status,
+			data: data
+		});
+
+		if (!data.token || !data.user || !data.user.id || !data.user.username) {
+			throw new Error("Invalid response format from server");
 		}
 
-		return data;
+		return data as LoginResponse;
 	} catch (error) {
 		if (error instanceof Error) {
 			throw new Error(error.message);

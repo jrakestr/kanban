@@ -17,7 +17,7 @@ import { TicketData } from "../interfaces/TicketData";
 
 interface TicketCardProps {
 	ticket: TicketData;
-	deleteTicket: (id: number) => Promise<any>;
+	deleteTicket: (id: number) => Promise<void>;
 }
 
 const TicketCard = ({ ticket, deleteTicket }: TicketCardProps) => {

@@ -3,15 +3,16 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { ChakraProvider } from '@chakra-ui/react';
 
+import { AuthProvider } from './context/AuthContext';
+import { useAuthContext } from './context/AuthContext';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Login from './pages/Login';
-import Auth from './utils/auth';
 import theme from './theme';
 
-export default function App() {
+function AppContent() {
   const location = useLocation();
-  const isAuthenticated = Auth.loggedIn();
+  const { isAuthenticated } = useAuthContext();
   const isLoginPage = location.pathname === '/login';
   const showHero = !isAuthenticated && location.pathname === '/' && !isLoginPage;
 
@@ -21,19 +22,27 @@ export default function App() {
   }
 
   return (
+    <DndProvider backend={HTML5Backend}>
+      {isLoginPage ? (
+        <Login />
+      ) : (
+        <div>
+          <Navbar />
+          <main>
+            {showHero ? <Hero /> : <Outlet />}
+          </main>
+        </div>
+      )}
+    </DndProvider>
+  );
+}
+
+export default function App() {
+  return (
     <ChakraProvider theme={theme}>
-      <DndProvider backend={HTML5Backend}>
-        {isLoginPage ? (
-          <Login />
-        ) : (
-          <div>
-            <Navbar />
-            <main>
-              {showHero ? <Hero /> : <Outlet />}
-            </main>
-          </div>
-        )}
-      </DndProvider>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
     </ChakraProvider>
   );
 }

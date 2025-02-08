@@ -6,8 +6,9 @@ import { ApiMessage } from "../interfaces/ApiMessage";
 import Auth from "../utils/auth";
 
 const retrieveTickets = async () => {
+	console.log('🔍 [TicketAPI] Fetching all tickets');
 	try {
-		const apiUrl = `${import.meta.env.VITE_API_BASE_URL || "/api"}/tickets`;
+		const apiUrl = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001'}/api/tickets`;
 		const response = await fetch(apiUrl, {
 			headers: {
 				"Content-Type": "application/json",
@@ -30,7 +31,7 @@ const retrieveTickets = async () => {
 const retrieveTicket = async (id: number | null): Promise<TicketData> => {
 	try {
 		const response = await fetch(
-			`${import.meta.env.VITE_API_BASE_URL || "/api"}/tickets/${id}`,
+			`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001'}/api/tickets/${id}`,
 			{
 				headers: {
 					"Content-Type": "application/json",
@@ -54,7 +55,7 @@ const retrieveTicket = async (id: number | null): Promise<TicketData> => {
 const createTicket = async (body: Partial<TicketData>): Promise<TicketData> => {
 	try {
 		const response = await fetch(
-			`${import.meta.env.VITE_API_BASE_URL || "/api"}/tickets`,
+			`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001'}/api/tickets`,
 			{
 				method: "POST",
 				headers: {

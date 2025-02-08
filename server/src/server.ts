@@ -36,33 +36,19 @@ const PORT = process.env.PORT || 3001;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-type AllowedOrigin = 'https://kanban-board-9ilp.onrender.com' | 'http://localhost:5173' | 'http://localhost:3000' | 'https://kanban-board-xm40.onrender.com';
 
-type AllowedMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'OPTIONS' | 'PATCH';
 
-type AllowedHeader = 'Content-Type' | 'Authorization' | 'Accept' | 'Origin';
-
-const allowedOrigins: ReadonlyArray<AllowedOrigin> = [
-  'https://kanban-board-9ilp.onrender.com',
-  'http://localhost:5173',
-  'http://localhost:3000',
-  'https://kanban-board-xm40.onrender.com'
-] as const;
-
-const corsOptions: Readonly<CorsOptions> = {
-  origin: (origin: string | undefined, callback: (err: Error | null, origin?: boolean) => void): void => {
-    if (!origin || (origin as AllowedOrigin && allowedOrigins.includes(origin as AllowedOrigin))) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+// In production, allow all origins
+const corsOptions: CorsOptions = {
+  origin: true, // Allow all origins in production
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'] as Array<AllowedMethod>,
-  allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'Origin'] as Array<AllowedHeader>,
-  exposedHeaders: ['Authorization'] as Array<AllowedHeader>,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'Origin'],
+  exposedHeaders: ['Authorization'],
   maxAge: 86400
 };
+
+app.use(cors(corsOptions));
 
 // Debug middleware
 app.use((req, res, next) => {
@@ -93,8 +79,6 @@ app.use((req: Request, _res: Response, next: NextFunction) => {
   }
   next();
 });
-
-app.use(cors(corsOptions));
 
 // Error handlers
 const corsErrorHandler: ErrorRequestHandler = (err: CorsError, _req: Request, res: Response, next: NextFunction) => {

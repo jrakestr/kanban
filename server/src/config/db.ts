@@ -20,7 +20,12 @@ export const sequelize = process.env.DATABASE_URL || process.env.DB_URL
         } : false,
         decimalNumbers: true,
       },
-      logging: false,
+      logging: (msg) => {
+        console.log('🔍 [Database] ' + msg);
+        if (msg.includes('SELECT') || msg.includes('INSERT') || msg.includes('UPDATE')) {
+          console.log('🔍 [Database] Stack trace:', new Error().stack);
+        }
+      },
       define: {
         timestamps: true,
         underscored: false,

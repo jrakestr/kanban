@@ -11,18 +11,46 @@ import { sequelize } from './models/index.js';
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// Configure CORS for specific origins
+const allowedOrigins = [
+  'https://kanban-board-9ilp.onrender.com',
+  'http://localhost:5173',
+  'https://kanban-board-xm40.onrender.com'
+];
+
 // Handle CORS preflight requests
 app.options('*', cors());
 
-// Configure CORS
+// Configure CORS with origin validation
 app.use(cors({
-  origin: '*', // Temporarily allow all origins for debugging
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
   exposedHeaders: ['Content-Range', 'X-Content-Range'],
   credentials: true,
   maxAge: 86400 // Cache preflight request for 24 hours
 }));
+
+// Add error handling middleware
+app.use((err: any, req: any, res: any, next: any) => {
+  if (err.message === 'Not allowed by CORS') {
+    res.status(403).json({
+      error: 'CORS Error',
+      message: 'This origin is not allowed to access the resource'
+    });
+  } else {
+    next(err);
+  }
+});
 app.use(express.json());
 app.use(routes);
 

@@ -3,6 +3,17 @@ import { User } from '../models/user.js';
 import jwt from 'jsonwebtoken';
 
 export const login = async (req: Request, res: Response): Promise<void> => {
+  // Set CORS headers explicitly for the login route
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'true');
+
+  // Handle preflight request
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
   const { username, password } = req.body;
 
   // Validate input

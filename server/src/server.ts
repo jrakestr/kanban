@@ -11,11 +11,17 @@ import { sequelize } from './models/index.js';
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// Handle CORS preflight requests
+app.options('*', cors());
+
+// Configure CORS
 app.use(cors({
-  origin: ['https://kanban-board-9ilp.onrender.com', 'http://localhost:5173'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
+  origin: '*', // Temporarily allow all origins for debugging
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  exposedHeaders: ['Content-Range', 'X-Content-Range'],
+  credentials: true,
+  maxAge: 86400 // Cache preflight request for 24 hours
 }));
 app.use(express.json());
 app.use(routes);
